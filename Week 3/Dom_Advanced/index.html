@@ -3,11 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Dom Advanced</title>
   </head>
   <body>
-    <h1>Hello</h1>
+    <input type="text" />
+    <button onclick="addTodo()">AddTodo</button>
+    <script>
+      function addTodo() {
+        const value = document.querySelector("input").value;
+        const divEl = document.createElement("div");
+        const spanEl = document.createElement("span");
+        const button = document.createElement("button");
 
-    <script src="./index1.js"></script>
+        spanEl.innerHTML = value;
+        button.innerHTML = "Delete";
+        divEl.appendChild(spanEl);
+        divEl.appendChild(button);
+        document.querySelector("body").appendChild(divEl);
+      }
+    </script>
   </body>
 </html>
