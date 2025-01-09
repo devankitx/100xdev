@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cors Testing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.6/axios.min.js"></script>
+  </head>
+  <body>
+    <input type="text" placeholder="First Value" id="a" />
+    <input type="text" placeholder="Second Value" id="b" />
+    <button onclick="sendRequest()">Find Sum</button>
+    <script>
+     async function sendRequest() {
+        const a = document.getElementById("a").value;
+        const b = document.getElementById("b").value;
+
+        const response = await axios.post("http://localhost:3000/sum", {
+          a: a,
+          b: b,
+        });
+      }
+    </script>
+  </body>
+</html>
