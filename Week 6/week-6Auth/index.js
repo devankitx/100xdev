@@ -78,6 +78,7 @@ function generateToken() {
   }
   return token;
 }
+
 app.post("/signup", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -108,6 +109,21 @@ app.post("/signin", (req, res) => {
   } else {
     res.status(403).send({
       message: "Invalid username or password",
+    });
+  }
+});
+
+app.get("/me", (req, res) => {
+  const token = req.headers.token;
+  const user = users.find((user) => user.token === token);
+  if (user) {
+    res.send({
+      username: user.username,
+      password: user.password,
+    });
+  } else {
+    res.status(401).send({
+      message: "Unauthorized",
     });
   }
 });
