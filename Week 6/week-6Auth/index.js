@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const jwt = require("jsonwebtoken");
 
 app.use(express.json());
 
@@ -79,6 +80,8 @@ function generateToken() {
   return token;
 }
 
+const JWT_SCERET = "logyourlift";
+
 app.post("/signup", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -100,8 +103,13 @@ app.post("/signin", (req, res) => {
     }
   });
   if (user) {
-    const token = generateToken();
-    user.token = token;
+    const token = jwt.sign(
+      {
+        username: username,
+      },
+      JWT_SCERET
+    );
+
     res.send({
       token,
     });
@@ -115,7 +123,10 @@ app.post("/signin", (req, res) => {
 
 app.get("/me", (req, res) => {
   const token = req.headers.token;
-  const user = users.find((user) => user.token === token);
+  const decodedInfromation = jwt.verify(token, JWT_SCERET);
+  const username = decodedInfromation.username;
+  const user = users.find((user) => user.username === username);
+
   if (user) {
     res.send({
       username: user.username,
