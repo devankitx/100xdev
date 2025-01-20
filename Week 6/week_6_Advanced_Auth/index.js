@@ -28,6 +28,9 @@ function auth(req, res, next) {
   }
 }
 
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/inedx.html");
+});
 app.post("/signup", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -55,6 +58,7 @@ app.post("/signin", (req, res) => {
     const token = jwt.sign(
       {
         username: username,
+        password: password,
       },
       JWT_SECERT
     );
@@ -72,6 +76,7 @@ app.get("/me", auth, (req, res) => {
   const user = req.user;
   res.send({
     username: user.username,
+    password: user.password,
   });
 
   //   const token = req.headers.token;
