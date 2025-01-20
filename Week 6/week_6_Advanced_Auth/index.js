@@ -7,6 +7,27 @@ app.use(express.json());
 
 const users = [];
 
+function auth(req, res, next) {
+  const token = req.headers.token;
+
+  if (token) {
+    jwt.verify(token, JWT_SECERT, function (err, decoded) {
+      if (err) {
+        res.json({
+          message: "Unautorized person",
+        });
+      } else {
+        req.user = decoded;
+        next();
+      }
+    });
+  } else {
+    res.status(401).send({
+      message: "Unauthorized",
+    });
+  }
+}
+
 app.post("/signup", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -47,22 +68,26 @@ app.post("/signin", (req, res) => {
   }
 });
 
-app.get("/me", (req, res) => {
-  const token = req.headers.token;
-  const decodedInfromation = jwt.verify(token, JWT_SECERT);
-  const username = decodedInfromation.username;
-  const user = users.find((user) => user.username === username);
+app.get("/me", auth, (req, res) => {
+  const user = req.user;
+  res.send({
+    username: user.username,
+  });
 
-  if (user) {
-    res.send({
-      username: user.username,
-      password: user.password,
-    });
-  } else {
-    res.status(401).send({
-      message: "Unauthorized",
-    });
-  }
+  //   const token = req.headers.token;
+  //   const decodedInfromation = jwt.verify(token, JWT_SECERT);
+  //   const username = decodedInfromation.username;
+  //   const user = users.find((user) => user.username === username);
+  //   if (user) {
+  //     res.send({
+  //       username: user.username,
+  //       password: user.password,
+  //     });
+  //   } else {
+  //     res.status(401).send({
+  //       message: "Unauthorized",
+  //     });
+  //   }
 });
 app.listen(3000, (req, res) => {
   console.log("Server is listening to port 3000");
