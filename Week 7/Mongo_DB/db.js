@@ -2,16 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
-mongoose
-  .connect(
-    "mongodb+srv://ankitmaurya99110:CBXQ3dhUtMmcuvHh@cluster0.cma4q.mongodb.net/Todo_App",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("Database connection error:", err));
 // User Schema
 const UserSchema = new Schema({
   name: { type: String, required: true },
