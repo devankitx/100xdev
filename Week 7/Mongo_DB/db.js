@@ -1,15 +1,38 @@
 const mongoose = require("mongoose");
-
 const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-const User = new Schema({
-  email: String,
-  name: String,
-  password: String,
+mongoose
+  .connect(
+    "mongodb+srv://ankitmaurya99110:CBXQ3dhUtMmcuvHh@cluster0.cma4q.mongodb.net/Todo_App",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Database connection error:", err));
+// User Schema
+const UserSchema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, unique: true, required: true },
+  password: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
-const Todo = new Schema({
-  title: String,
-  done: Boolean,
-  userId: ObjectId,
+// Todo Schema
+const TodoSchema = new Schema({
+  userId: { type: ObjectId, ref: "User", required: true },
+  title: { type: String, required: true },
+  done: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
 });
+
+// Models
+const UserModel = mongoose.model("User", UserSchema);
+const TodoModel = mongoose.model("Todo", TodoSchema);
+
+module.exports = {
+  UserModel,
+  TodoModel,
+};
