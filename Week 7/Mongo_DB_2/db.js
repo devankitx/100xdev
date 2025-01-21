@@ -1,11 +1,7 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
-mongoose
-  .connect(
-    "mongodb+srv://ankitmaurya99110:CBXQ3dhUtMmcuvHh@cluster0.cma4q.mongodb.net/Todo_app"
-  )
-  .then(() => console.log("Connected!"));
+
 
 const userSchema = new Schema({
   email: String,

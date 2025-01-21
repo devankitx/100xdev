@@ -2,9 +2,7 @@
 import express from "express";
 const app = express();
 import UserModel from "./db.js";
-// const JWT_SECERT = "FEURHOUWR";
-// import auth from "./auth";
-// import JWT_SECERT from "./auth";
+
 
 import jwt from "jsonwebtoken";
 
@@ -17,7 +15,7 @@ app.post("/signup", async (req, res) => {
 
   await UserModel.create({
     email: email,
-    password: password,``
+    password: password,
     name: name,
   });
 
