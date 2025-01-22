@@ -1,22 +1,19 @@
 import jwt from "jsonwebtoken";
-const JWT_SECERT = "FEURHOUWR";
+const JWT_SECRET = "s3cret";
 
 function auth(req, res, next) {
-  const token = req.header.token;
+  try {
+    const token = req.header.token; // Bearer Token
+    if (token) {
+      return res.status(401).json({ message: "token provided" });
+    }
 
-  const response = jwt.verify(token, JWT_SECERT);
-
-  if (response) {
-    req.userId = response.userId;
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.userId = payload.id; // Extract user ID from the token payload
     next();
-  } else {
-    res.status(403).json({
-      message: "Incorrect creds",
-    });
+  } catch (err) {
+    res.status(403).json({ message: "Invalid or expired token" });
   }
 }
 
-module.exports = {
-  auth,
-  JWT_SECERT,
-};
+export { auth, JWT_SECRET };
