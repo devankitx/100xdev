@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { UserModel } from "./db.js";
 import { auth, JWT_SECRET } from "./auth.js";
+import bcrypt from "bcrypt";
+import { z } from "zod";
 
 dotenv.config();
 const MONGO_URI = process.env.MONGO_URI;
@@ -20,10 +22,19 @@ app.use(express.json());
 
 // User Signup
 app.post("/signup", async (req, res) => {
+  const requiredBody = z.object({
+    email: z.string(),
+    name: z.string(),
+    password: z.string(),
+  });
+
   const { email, password, name } = req.body;
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+  console.log(hashedPassword);
+
   try {
-    await UserModel.create({ email, password, name });
+    await UserModel.create({ email, password: hashedPassword, name });
     res.json({ message: "You are signed up" });
   } catch (error) {
     res
@@ -37,9 +48,18 @@ app.post("/signin", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await UserModel.findOne({ email, password });
+    const user = await UserModel.findOne({ email });
 
-    if (user) {
+    if (!user) {
+      res.status(403).json({
+        message: "User Does not exit ! / Try Signup first",
+      });
+      return;
+    }
+
+    const matchUser = await bcrypt.compare(password, user.password);
+
+    if (matchUser) {
       const token = jwt.sign({ id: user._id.toString() }, JWT_SECRET);
       res.json({ token });
     } else {
