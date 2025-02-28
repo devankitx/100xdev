@@ -1,29 +1,51 @@
-import React, { useState } from "react";
+import React from 'react'
+// import './App.css'
+import { RecoilRoot, useRecoilValue, useSetRecoilState } from 'recoil'
+import { counterAtom } from './store/atoms/counter'
 
-// LightBulb Component
-const LightBulb = ({ isOn }) => {
-  return <div>The light is {isOn ? "ON" : "OFF"}</div>;
-};
-
-// LightSwitch Component
-const LightSwitch = ({ toggleLight }) => {
-  return <button onClick={toggleLight}>Toggle Light</button>;
-};
-
-// App Component
-const App = () => {
-  const [isLightOn, setIsLightOn] = useState(false);
-
-  const toggleLight = () => {
-    setIsLightOn((prev) => !prev);
-  };
-
+function App() {
   return (
-    <div>
-      <LightBulb isOn={isLightOn} />
-      <LightSwitch toggleLight={toggleLight} />
-    </div>
-  );
-};
+    <RecoilRoot>
+      <Counter/>
+    </RecoilRoot>
+  )
+}
 
-export default App;
+function Counter() {
+  return <>
+    <CurrentCount/>
+    <Increase />
+    <Decrease/>
+  </>
+}
+
+function CurrentCount(){
+  const count = useRecoilValue(counterAtom)
+  return <div>{count}</div>
+}
+
+function Increase() {
+  const setCount = useSetRecoilState(counterAtom)
+  
+  function increaseCount() {
+    setCount(c => c + 1)
+  }
+  
+  return <div>
+    <button onClick={increaseCount}>increase</button>
+  </div>
+}
+
+function Decrease() {
+  const setCount = useSetRecoilState(counterAtom)
+  
+  function decreaseCount() {
+    setCount(c => c - 1)
+  }
+  
+  return <div>
+    <button onClick={decreaseCount}>decrease</button>
+  </div>
+}
+
+export default App
